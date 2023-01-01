@@ -57,6 +57,7 @@ async function setupViewer() {
   await viewer.addPlugin(GBufferPlugin); // Dat <====
   await viewer.addPlugin(new ProgressivePlugin(32)); // Dat <====
   await viewer.addPlugin(new TonemapPlugin(!viewer.useRgbm)); // Dat <====
+
   // await viewer.addPlugin(GammaCorrectionPlugin)
   await viewer.addPlugin(SSRPlugin); // Dat <====
   await viewer.addPlugin(SSAOPlugin); // Dat <====
@@ -77,7 +78,10 @@ async function setupViewer() {
   // This must be called once after all plugins are added.
   viewer.renderer.refreshPipeline();
 
-  await manager.addFromPath("./assets/Drill2k.glb"); // Dat <====
+  await manager.addFromPath("./assets/drill3.glb"); // Dat <====
+
+  viewer.getPlugin(TonemapPlugin)!.config!.clipBackground = true; // in case its set to false in the glb // Dat <====
+  viewer.scene.activeCamera.setCameraOptions({ controlsEnabled: false }); // Dat <==== scroll camera to smooth
 
   // Load an environment map if not set in the glb file
   // await viewer.scene.setEnvironment(
@@ -95,12 +99,13 @@ async function setupViewer() {
   function setupScrollanimation() {
     const tl = gsap.timeline();
     console.log("tl: ", tl);
-    // frist section
+
+    // FIRST SECTION
 
     tl.to(position, {
-      x: 2.7,
-      y: -2.9,
-      z: -4.4,
+      x: 1.56,
+      y: -2.26,
+      z: -3.85,
       //   duration: 4,
       scrollTrigger: {
         trigger: ".second",
@@ -108,66 +113,75 @@ async function setupViewer() {
         end: "top top",
         // markers: true,
         scrub: true,
-        immediateRender: false
+        immediateRender: false,
       },
       onUpdate,
     })
       .to(target, {
-        x: -0.8,
-        y: 0.7,
-        z: -0.6,
+        x: -1.37,
+        y: 1.99,
+        z: -0.37,
         scrollTrigger: {
           trigger: ".second",
           start: "top bottom",
           end: "top top",
           scrub: true,
-          immediateRender: false
+          immediateRender: false,
         },
       })
-      // Last section =======
+
+      // LAST SECTION
+
       .to(position, {
-        x: -2.7,
-        y: -0.3,
-        z: 2,
+        x: -3.4,
+        y: 9.6,
+        z: 1.71,
         scrollTrigger: {
           trigger: ".third",
           start: "top bottom",
           end: "top top",
           scrub: true,
-          immediateRender: false
+          immediateRender: false,
         },
         onUpdate,
       })
       .to(target, {
-        x: -1,
-        y: 0.9,
-        z: -0.1,
+        x: -1.5,
+        y: 2.13,
+        z: -0.4,
         scrollTrigger: {
           trigger: ".third",
           start: "top bottom",
           end: "top top",
           scrub: true,
-          immediateRender: false
+          immediateRender: false,
         },
       });
   }
   setupScrollanimation();
 
-  //   WEBGI UPDATE
+  // WEBGI UPDATE
   let needsUpdate = true;
 
   function onUpdate() {
     needsUpdate = true;
-    viewer.renderer.resetShadows();
+    // viewer.renderer.resetShadows()
+    viewer.setDirty();
   }
 
   viewer.addEventListener("preFrame", () => {
     if (needsUpdate) {
-      camera.positionUpdated(true);
-      camera.targetUpdated(true);
+      camera.positionTargetUpdated(true);
       needsUpdate = false;
     }
   });
+  //   viewer.addEventListener("preFrame", () => {
+  //     if (needsUpdate) {
+  //       camera.positionUpdated(true);
+  //       camera.targetUpdated(true);
+  //       needsUpdate = false;
+  //     }
+  //   });
 }
 
 setupViewer();
