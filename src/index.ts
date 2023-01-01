@@ -98,19 +98,58 @@ async function setupViewer() {
     // frist section
 
     tl.to(position, {
-      x: 3,
-      y: -3,
-      z: -3,
-      duration: 4,
+      x: 2.7,
+      y: -2.9,
+      z: -4.4,
+      //   duration: 4,
       scrollTrigger: {
         trigger: ".second",
         start: "top bottom",
         end: "top top",
-        markers: true,
-        scrub: true
+        // markers: true,
+        scrub: true,
+        immediateRender: false
       },
       onUpdate,
-    });
+    })
+      .to(target, {
+        x: -0.8,
+        y: 0.7,
+        z: -0.6,
+        scrollTrigger: {
+          trigger: ".second",
+          start: "top bottom",
+          end: "top top",
+          scrub: true,
+          immediateRender: false
+        },
+      })
+      // Last section =======
+      .to(position, {
+        x: -2.7,
+        y: -0.3,
+        z: 2,
+        scrollTrigger: {
+          trigger: ".third",
+          start: "top bottom",
+          end: "top top",
+          scrub: true,
+          immediateRender: false
+        },
+        onUpdate,
+      })
+      .to(target, {
+        x: -1,
+        y: 0.9,
+        z: -0.1,
+        scrollTrigger: {
+          trigger: ".third",
+          start: "top bottom",
+          end: "top top",
+          scrub: true,
+          immediateRender: false
+        },
+      });
   }
   setupScrollanimation();
 
@@ -124,7 +163,7 @@ async function setupViewer() {
 
   viewer.addEventListener("preFrame", () => {
     if (needsUpdate) {
-      camera.positionUpdated(false);
+      camera.positionUpdated(true);
       camera.targetUpdated(true);
       needsUpdate = false;
     }
